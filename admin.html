@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👨‍💼 Painel do Dono - Burger House</title>
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Cabeçalho Admin -->
+        <header class="admin-header">
+            <h1>👨‍💼 PAINEL DO DONO</h1>
+            <p>Gerenciamento de Pedidos</p>
+            <button class="btn-voltar" onclick="window.location.href='index.html'">← Voltar ao Site</button>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="total-pedidos">0</div>
+                <div class="stat-label">Total de Pedidos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-ganho">R$ 0,00</div>
+                <div class="stat-label">Total de Ganhos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pedidos-preparando">0</div>
+                <div class="stat-label">Preparando</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pedidos-entregue">0</div>
+                <div class="stat-label">Entregues</div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros">
+            <button class="filtro-btn active" onclick="filtrarPedidos('Preparando')">🔄 Preparando</button>
+            <button class="filtro-btn" onclick="filtrarPedidos('Entregue')">✅ Entregue</button>
+            <button class="filtro-btn" onclick="filtrarPedidos('Cancelado')">❌ Cancelado</button>
+            <button class="filtro-btn" onclick="filtrarPedidos('todos')">📋 Todos</button>
+        </div>
+
+        <!-- Lista de Pedidos -->
+        <div class="pedidos-container">
+            <div id="lista-pedidos" class="lista-pedidos">
+                <div class="empty-message">
+                    <p>📭 Nenhum pedido no momento</p>
+                    <p style="font-size: 0.9em; color: #666;">Os pedidos aparecerão aqui quando os clientes fizerem compras!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>
