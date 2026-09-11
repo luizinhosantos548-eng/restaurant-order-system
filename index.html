@@ -3,42 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍕 Burger House - Sistema de Pedidos</title>
+    <title>🍔 Burger House - Sistema de Pedidos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <!-- Botão Flutuante para Admin -->
-        <div class="admin-button">
-            <button class="btn-admin" onclick="goToAdmin()">👨‍💼 Admin</button>
-        </div>
-
-        <!-- Cabeçalho -->
+        <!-- CABEÇALHO -->
         <header class="header">
-            <h1 class="title-animated">🍔 BURGER HOUSE 🍔</h1>
+            <h1 class="title">🍔 BURGER HOUSE</h1>
             <p class="subtitle">Melhor comida da cidade!</p>
+            <div class="admin-button">
+                <button class="btn-admin" onclick="goToAdmin()">👨‍💼 Painel do Dono</button>
+            </div>
         </header>
 
-        <!-- Menu de Navegação -->
+        <!-- NAVEGAÇÃO -->
         <nav class="navbar">
-            <button class="nav-btn active" onclick="showSection('menu')">🍽️ Menu</button>
-            <button class="nav-btn" onclick="showSection('cart')">🛒 Carrinho (<span id="cart-count">0</span>)</button>
+            <button class="nav-btn active" onclick="showSection('menu', this)">🍽️ Menu</button>
+            <button class="nav-btn" onclick="showSection('cart', this)">🛒 Carrinho <span id="cart-count">0</span></button>
         </nav>
 
-        <!-- Seção Menu -->
+        <!-- SEÇÃO MENU -->
         <section id="menu" class="section active">
-            <h2 class="section-title">📋 Nossos Produtos</h2>
-            <div class="menu-grid" id="menu-grid">
-                <!-- Será preenchido por JavaScript -->
-            </div>
+            <h2 class="section-title">Nossos Produtos 🤤</h2>
+            <div class="menu-grid" id="menu-grid"></div>
         </section>
 
-        <!-- Seção Carrinho -->
+        <!-- SEÇÃO CARRINHO -->
         <section id="cart" class="section">
-            <h2 class="section-title">🛒 Seu Carrinho</h2>
+            <h2 class="section-title">Seu Pedido 🎉</h2>
             <div class="cart-container">
                 <div class="cart-items" id="cart-items">
-                    <!-- Será preenchido por JavaScript -->
+                    <div class="empty-cart">
+                        <div class="empty-cart-emoji">🛒</div>
+                        <p>Seu carrinho está vazio!</p>
+                    </div>
                 </div>
                 <div class="cart-summary" id="cart-summary">
                     <p>Nenhum item no carrinho</p>
