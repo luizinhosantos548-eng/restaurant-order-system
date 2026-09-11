@@ -1,268 +1,120 @@
-// Dados do menu
 const menu = [
-    { id: 1, name: '🍔 Hamburger', price: 15.00, description: 'Delicioso com queijo derretido', emoji: '🍔' },
-    { id: 2, name: '🍕 Pizza', price: 25.00, description: 'Massa crocante e coberturas deliciosas', emoji: '🍕' },
-    { id: 3, name: '🌭 Hot Dog', price: 12.00, description: 'Pão quentinho com calabresa', emoji: '🌭' },
-    { id: 4, name: '🍟 Batata Frita', price: 8.00, description: 'Crocante e quentinha', emoji: '🍟' },
-    { id: 5, name: '🥤 Refrigerante', price: 5.00, description: 'Gelado e refrescante', emoji: '🥤' },
-    { id: 6, name: '🍰 Sobremesa', price: 10.00, description: 'Doce e irresistível', emoji: '🍰' }
+    { id: 1, name: '🍔 Burger Clássico', desc: 'Hambúrguer suculento com queijo derretido', price: 24.90, emoji: '🍔' },
+    { id: 2, name: '🥓 Burger Bacon', desc: 'Com bacon crocante e cheddar', price: 29.90, emoji: '🥓' },
+    { id: 3, name: '🌮 Burger Especial', desc: 'Receita secreta da casa', price: 32.90, emoji: '🌮' },
+    { id: 4, name: '🍟 Combo Fritas', desc: 'Fritas crocantes e salgadinhos', price: 19.90, emoji: '🍟' },
+    { id: 5, name: '🥤 Bebida Gelada', desc: 'Refrigerante ou suco natural', price: 8.90, emoji: '🥤' },
+    { id: 6, name: '🍰 Sobremesa Doce', desc: 'Brownie ou pudim da casa', price: 14.90, emoji: '🍰' }
 ];
 
 let cart = [];
 
-// Inicializar página
-document.addEventListener('DOMContentLoaded', () => {
-    renderMenu();
-    loadCart();
-});
-
-// Renderizar menu
 function renderMenu() {
-    const menuGrid = document.getElementById('menu-grid');
-    menuGrid.innerHTML = menu.map(item => `
-        <div class="menu-item">
-            <div class="menu-image">${item.emoji}</div>
-            <div class="menu-name">${item.name}</div>
-            <div class="menu-description">${item.description}</div>
-            <div class="menu-price">R$ ${item.price.toFixed(2)}</div>
-            <button class="btn-add" onclick="addToCart(${item.id})">Adicionar ao Carrinho ➕</button>
+    const grid = document.getElementById('menuGrid');
+    grid.innerHTML = menu.map(item => `
+        <div class="menu-item" onclick="addToCart(${item.id})">
+            <div class="menu-item-image">${item.emoji}</div>
+            <div class="menu-item-content">
+                <div class="menu-item-name">${item.name}</div>
+                <div class="menu-item-desc">${item.desc}</div>
+                <div class="menu-item-price">R$ ${item.price.toFixed(2).replace('.', ',')}</div>
+                <button class="menu-item-btn" onclick="event.stopPropagation(); addToCart(${item.id})">Adicionar</button>
+            </div>
         </div>
     `).join('');
 }
 
-// Adicionar ao carrinho
 function addToCart(itemId) {
     const item = menu.find(m => m.id === itemId);
-    const cartItem = cart.find(c => c.id === itemId);
-
-    if (cartItem) {
-        cartItem.quantity++;
+    const existing = cart.find(c => c.id === itemId);
+    
+    if (existing) {
+        existing.qty++;
     } else {
-        cart.push({ ...item, quantity: 1 });
+        cart.push({ ...item, qty: 1 });
     }
-
-    saveCart();
-    updateCartUI();
-    showAddAnimation(event.target);
+    
+    updateCart();
 }
 
-// Remover do carrinho
 function removeFromCart(itemId) {
     cart = cart.filter(item => item.id !== itemId);
-    saveCart();
-    updateCartUI();
+    updateCart();
 }
 
-// Alterar quantidade
-function updateQuantity(itemId, change) {
+function changeQty(itemId, delta) {
     const item = cart.find(c => c.id === itemId);
     if (item) {
-        item.quantity += change;
-        if (item.quantity <= 0) {
+        item.qty += delta;
+        if (item.qty <= 0) {
             removeFromCart(itemId);
         } else {
-            saveCart();
-            updateCartUI();
+            updateCart();
         }
     }
 }
 
-// Atualizar UI do carrinho
-function updateCartUI() {
-    const cartCount = document.getElementById('cart-count');
-    const cartItems = document.getElementById('cart-items');
-    const cartSummary = document.getElementById('cart-summary');
-
-    // Atualizar contagem
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartCount.textContent = totalItems;
-
-    // Renderizar itens
-    if (cart.length === 0) {
-        cartItems.innerHTML = `
-            <div class="empty-cart">
-                <div class="empty-cart-emoji">🛒</div>
-                <p>Seu carrinho está vazio!</p>
-            </div>
-        `;
-        cartSummary.innerHTML = '<p>Nenhum item no carrinho</p>';
-    } else {
-        cartItems.innerHTML = cart.map(item => `
-            <div class="cart-item">
-                <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-price">R$ ${item.price.toFixed(2)} × ${item.quantity} = R$ ${(item.price * item.quantity).toFixed(2)}</div>
-                <div class="cart-item-quantity">
-                    <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">−</button>
-                    <span>${item.quantity}</span>
-                    <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
-                    <button class="btn-remove" onclick="removeFromCart(${item.id})">Remover ❌</button>
-                </div>
-            </div>
-        `).join('');
-
-        // Renderizar resumo
-        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const taxa = subtotal * 0.1;
-        const total = subtotal + taxa;
-
-        cartSummary.innerHTML = `
-            <div class="summary-line">
-                <span>Subtotal:</span>
-                <span>R$ ${subtotal.toFixed(2)}</span>
-            </div>
-            <div class="summary-line">
-                <span>Taxa (10%):</span>
-                <span>R$ ${taxa.toFixed(2)}</span>
-            </div>
-            <div class="summary-line summary-total">
-                <span>TOTAL:</span>
-                <span>R$ ${total.toFixed(2)}</span>
-            </div>
-            <button class="btn-checkout" onclick="checkout()">FINALIZAR PEDIDO 🎉</button>
-        `;
-    }
+function updateCart() {
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    document.getElementById('cartCount').textContent = count;
+    renderCartItems();
 }
 
-// Finalizar pedido
-function checkout() {
+function renderCartItems() {
+    const container = document.getElementById('cartItems');
+    
     if (cart.length === 0) {
-        alert('Seu carrinho está vazio!');
+        container.innerHTML = '<p style="text-align:center; color:var(--gray);">Seu carrinho está vazio 😔</p>';
+        document.getElementById('checkoutBtn').disabled = true;
         return;
     }
-
-    // Calcular totais
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const taxa = subtotal * 0.1;
-    const total = subtotal + taxa;
-
-    // Gerar número de comprovante
-    const receiptNumber = 'BURGER-' + Date.now();
-
-    // Mostrar modal com comprovante
-    showReceipt(receiptNumber, subtotal, taxa, total);
-
-    // Salvar pedido
-    savePedido({
-        numero: receiptNumber,
-        itens: JSON.parse(JSON.stringify(cart)),
-        subtotal: subtotal,
-        taxa: taxa,
-        total: total,
-        data: new Date().toLocaleString('pt-BR'),
-        status: 'Preparando'
-    });
-
-    // Limpar carrinho
-    cart = [];
-    saveCart();
-    updateCartUI();
-}
-
-// Mostrar comprovante
-function showReceipt(receiptNumber, subtotal, taxa, total) {
-    const modal = document.createElement('div');
-    modal.className = 'modal show';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="receipt-title">✅ PEDIDO CONFIRMADO!</div>
-            <div class="receipt-number">Nº ${receiptNumber}</div>
-            
-            <div class="receipt-items">
-                ${cart.map(item => `
-                    <div class="receipt-item">
-                        <span>${item.name} × ${item.quantity}</span>
-                        <span>R$ ${(item.price * item.quantity).toFixed(2)}</span>
-                    </div>
-                `).join('')}
-            </div>
-
-            <div class="summary-line">
-                <span>Subtotal:</span>
-                <span>R$ ${subtotal.toFixed(2)}</span>
-            </div>
-            <div class="summary-line">
-                <span>Taxa:</span>
-                <span>R$ ${taxa.toFixed(2)}</span>
-            </div>
-            
-            <div class="receipt-total">
-                TOTAL: R$ ${total.toFixed(2)}
-            </div>
-
-            <div class="receipt-message">
-                👨‍🍳 Seu pedido foi enviado para a cozinha!<br>
-                ⏱️ Tempo de preparo: 15-20 minutos<br>
-                📱 Acompanhe seu pedido no painel!
-            </div>
-
-            <button class="btn-close-receipt" onclick="closeReceipt()">Voltar ao Menu 🏠</button>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-}
-
-// Fechar comprovante
-function closeReceipt() {
-    const modal = document.querySelector('.modal');
-    if (modal) {
-        modal.remove();
-    }
-    showSection('menu');
-}
-
-// Trocar seção
-function showSection(sectionId) {
-    // Esconder todas as seções
-    document.querySelectorAll('.section').forEach(section => {
-        section.classList.remove('active');
-    });
-
-    // Esconder todos os botões ativos
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-
-    // Mostrar seção selecionada
-    document.getElementById(sectionId).classList.add('active');
-
-    // Ativar botão
-    if (event && event.target) {
-        event.target.classList.add('active');
-    }
-}
-
-// LocalStorage
-function saveCart() {
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-function loadCart() {
-    const saved = localStorage.getItem('cart');
-    if (saved) {
-        cart = JSON.parse(saved);
-        updateCartUI();
-    }
-}
-
-function savePedido(pedido) {
-    let pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
-    pedidos.push(pedido);
-    localStorage.setItem('pedidos', JSON.stringify(pedidos));
-}
-
-// Animação de adição
-function showAddAnimation(button) {
-    button.textContent = '✅ Adicionado!';
-    button.style.animation = 'pulse 0.6s, spin 0.6s';
     
-    setTimeout(() => {
-        button.textContent = 'Adicionar ao Carrinho ➕';
-        button.style.animation = 'glow 2s ease-in-out infinite';
-    }, 800);
+    document.getElementById('checkoutBtn').disabled = false;
+    
+    container.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <div class="cart-item-info">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-qty">
+                    <button onclick="changeQty(${item.id}, -1)">−</button>
+                    <span>${item.qty}</span>
+                    <button onclick="changeQty(${item.id}, 1)">+</button>
+                </div>
+            </div>
+            <div class="cart-item-price">R$ ${(item.price * item.qty).toFixed(2).replace('.', ',')}</div>
+        </div>
+    `).join('');
+    
+    const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    document.getElementById('totalPrice').textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
 }
 
-// Ir para admin
-function goToAdmin() {
-    window.location.href = 'admin.html';
+function openCart() {
+    document.getElementById('cartModal').classList.add('show');
+    document.getElementById('overlay').classList.add('show');
+    renderCartItems();
 }
+
+function closeCart() {
+    document.getElementById('cartModal').classList.remove('show');
+    document.getElementById('overlay').classList.remove('show');
+}
+
+function checkout() {
+    if (cart.length === 0) return;
+    
+    const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const itemsList = cart.map(item => `${item.qty}x ${item.name}`).join(', ');
+    const message = `Olá! Gostaria de fazer um pedido:\n${itemsList}\nTotal: R$ ${total.toFixed(2).replace('.', ',')}`;
+    const whatsappLink = `https://wa.me/5547991804694?text=${encodeURIComponent(message)}`;
+    
+    window.open(whatsappLink, '_blank');
+    cart = [];
+    updateCart();
+    closeCart();
+}
+
+document.getElementById('cartBtn').addEventListener('click', openCart);
+
+renderMenu();
+updateCart();
