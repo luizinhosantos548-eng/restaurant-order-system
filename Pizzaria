@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍕 Burger House - Sistema de Pedidos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Botão Flutuante para Admin -->
+        <div class="admin-button">
+            <button class="btn-admin" onclick="goToAdmin()">👨‍💼 Admin</button>
+        </div>
+
+        <!-- Cabeçalho -->
+        <header class="header">
+            <h1 class="title-animated">🍔 BURGER HOUSE 🍔</h1>
+            <p class="subtitle">Melhor comida da cidade!</p>
+        </header>
+
+        <!-- Menu de Navegação -->
+        <nav class="navbar">
+            <button class="nav-btn active" onclick="showSection('menu')">🍽️ Menu</button>
+            <button class="nav-btn" onclick="showSection('cart')">🛒 Carrinho (<span id="cart-count">0</span>)</button>
+        </nav>
+
+        <!-- Seção Menu -->
+        <section id="menu" class="section active">
+            <h2 class="section-title">📋 Nossos Produtos</h2>
+            <div class="menu-grid" id="menu-grid">
+                <!-- Será preenchido por JavaScript -->
+            </div>
+        </section>
+
+        <!-- Seção Carrinho -->
+        <section id="cart" class="section">
+            <h2 class="section-title">🛒 Seu Carrinho</h2>
+            <div class="cart-container">
+                <div class="cart-items" id="cart-items">
+                    <!-- Será preenchido por JavaScript -->
+                </div>
+                <div class="cart-summary" id="cart-summary">
+                    <p>Nenhum item no carrinho</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
